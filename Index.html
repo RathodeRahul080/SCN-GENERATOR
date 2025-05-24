@@ -2,11 +2,11 @@
 <html>
 <head>
   <title>Show Cause Notice Generator</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/docx/7.7.0/docx.min.js"></script>
   <style>
     body { font-family: Arial, sans-serif; max-width: 800px; margin: auto; padding: 20px; }
-    textarea, input, select { width: 100%; margin: 10px 0; padding: 8px; }
-    button { padding: 10px 15px; }
-    h2, h3 { color: #333; }
+    textarea, input { width: 100%; margin: 10px 0; padding: 8px; }
+    button { padding: 10px 15px; margin-right: 10px; }
   </style>
 </head>
 <body>
@@ -30,7 +30,7 @@
   <label>Liability Details & Calculation:</label>
   <textarea id="liability"></textarea>
 
-  <label>Legal Provisions (mention points manually for now):</label>
+  <label>Legal Provisions:</label>
   <textarea id="legal"></textarea>
 
   <label>Officer Designation:</label>
@@ -39,12 +39,15 @@
   <label>Date:</label>
   <input type="date" id="date">
 
-  <button onclick="generate()">Generate Notice</button>
+  <button onclick="generate()">Preview</button>
+  <button onclick="downloadDoc()">Download as Word</button>
 
-  <h3>Generated Show Cause Notice:</h3>
+  <h3>Preview of Notice:</h3>
   <textarea id="output" rows="20"></textarea>
 
   <script>
+    let latestNoticeText = '';
+
     function generate() {
       const gstin = document.getElementById("gstin").value;
       const tradeName = document.getElementById("tradeName").value;
@@ -66,38 +69,58 @@ Subject: ${subject}
 
 ---
 
-**Para 1: Taxpayer Details**  
+Para 1: Taxpayer Details  
 The taxpayer, registered under GST with GSTIN ${gstin}, operating under the trade name "${tradeName}" and legally recognized as "${legalName}", is recognized as a registered person under the GST Act. The records maintained indicate the said taxpayer is active and has engaged in supply of goods/services under the aforementioned credentials.
 
 ---
 
-**Para 2: Issue Involved**  
-It has been observed that the taxpayer is involved in the following issue:  
+Para 2: Issue Involved  
 ${issue}
 
 ---
 
-**Para 3: Liability Found and Calculation**  
-The investigation/analysis reveals the following liability and computation:  
+Para 3: Liability Found and Calculation  
 ${liability}
 
 ---
 
-**Para 4: Relevant Legal Provisions**  
-The actions/inactions stated above appear to be in violation of the following provisions under the CGST Act and relevant Rules (as per CBIC guidelines):  
+Para 4: Relevant Legal Provisions  
 ${legal}
 
 ---
 
-**Para 5: Notice to Show Cause**  
-Therefore, you are hereby called upon to show cause within 15 days from the date of issue of this notice as to why the tax liability as determined above should not be demanded and recovered under the provisions of the GST law. If no reply is received within the stipulated time, it will be presumed that you have nothing to state in your defense, and proceedings may be initiated ex-parte.
+Para 5: Notice to Show Cause  
+You are hereby called upon to show cause within 15 days from the date of issue of this notice as to why the tax liability as determined above should not be demanded and recovered under the provisions of the GST law. If no reply is received within the stipulated time, it will be presumed that you have nothing to state in your defense, and proceedings may be initiated ex-parte.
 
 Issued by:  
 ${officer}  
 Date: ${date}
       `;
-
+      latestNoticeText = notice;
       document.getElementById("output").value = notice;
+    }
+
+    async function downloadDoc() {
+      const { Document, Packer, Paragraph, TextRun } = window.docx;
+
+      if (!latestNoticeText) {
+        alert("Please click 'Preview' first to generate the notice.");
+        return;
+      }
+
+      const doc = new Document({
+        sections: [{
+          children: latestNoticeText.split('\n').map(line => 
+            new Paragraph({ children: [new TextRun(line)] })
+          )
+        }]
+      });
+
+      const blob = await Packer.toBlob(doc);
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = "ShowCauseNotice.docx";
+      link.click();
     }
   </script>
 </body>
