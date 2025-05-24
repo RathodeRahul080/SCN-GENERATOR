@@ -1,123 +1,137 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SCN Generator - Minimal Input</title>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/docx/7.7.0/docx.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <title>GST Show Cause Notice Generator</title>
   <style>
-    body { font-family: Arial, sans-serif; padding: 20px; max-width: 900px; margin: auto; }
-    label, input, textarea, select, button { display: block; width: 100%; margin-top: 10px; padding: 8px; }
-    button { width: auto; }
-    #preview { display: none; background: #f4f4f4; padding: 20px; margin-top: 20px; }
+    label { display: block; margin-top: 10px; font-weight: bold; }
+    input, textarea, select { width: 100%; padding: 8px; margin-top: 4px; }
+    .form-section { border: 1px solid #ccc; padding: 10px; margin-bottom: 20px; }
   </style>
 </head>
 <body>
-<h2>SCN Generator (Minimal Input)</h2>
+  <h1>Generate GST Show Cause Notice</h1>
 
-<label>Subject of SCN</label>
-<input type="text" id="subject">
+  <form id="scnForm">
+    <div class="form-section">
+      <label>OC Number</label>
+      <input name="oc_number" required>
 
-<label>Taxpayer Name</label>
-<input type="text" id="taxpayerName">
+      <label>DIN</label>
+      <input name="din" required>
 
-<label>GSTIN</label>
-<input type="text" id="gstin">
+      <label>SCN Number</label>
+      <input name="scn_number" required>
 
-<label>Address</label>
-<textarea id="address"></textarea>
+      <label>Date of Notice</label>
+      <input name="date_of_notice" type="date" required>
+    </div>
 
-<label>Tax Period</label>
-<input type="text" id="taxPeriod">
+    <div class="form-section">
+      <label>Taxpayer Name</label>
+      <input name="taxpayer_name" required>
 
-<label>IGST Amount</label>
-<input type="number" id="igst" oninput="autoFillTax()">
+      <label>GSTIN</label>
+      <input name="taxpayer_gstin" required>
 
-<label>CGST Amount</label>
-<input type="number" id="cgst" oninput="calculateTotal()">
+      <label>Taxpayer Address</label>
+      <textarea name="taxpayer_address" required></textarea>
 
-<label>SGST Amount</label>
-<input type="number" id="sgst" oninput="calculateTotal()">
+      <label>Taxpayer Email</label>
+      <input name="taxpayer_email" type="email" required>
+    </div>
 
-<label>Cess</label>
-<input type="number" id="cess" oninput="calculateTotal()">
+    <div class="form-section">
+      <label>Subject</label>
+      <input name="subject" placeholder="e.g., Non-payment of GST" required>
 
-<label>Total Tax Amount</label>
-<input type="number" id="totalTax" readonly>
+      <label>Nature of Issue</label>
+      <select name="issue_type" required>
+        <option value="Non-payment">Non-payment of GST</option>
+        <option value="Wrong ITC">Wrong Input Tax Credit Claimed</option>
+        <option value="Non-filing">Non-filing of Returns</option>
+        <option value="Others">Others</option>
+      </select>
 
-<label>Select Legal Provision</label>
-<select id="legalSelect" onchange="showLegalText()">
-  <option value="">-- Select --</option>
-  <option value="59">Section 59 - Self-assessment</option>
-  <option value="9">Section 9 - Levy and Collection</option>
-  <option value="50">Section 50 - Interest</option>
-  <option value="74">Section 74 - Fraud</option>
-  <option value="122">Section 122(2)(b) - Penalty</option>
-</select>
-<p id="legalText"></p>
+      <label>Issue Description</label>
+      <textarea name="issue_description" required></textarea>
 
-<button onclick="generatePreview()">Generate Preview</button>
-<button onclick="downloadDocx()">Download Word</button>
-<button onclick="exportPDF()">Download PDF</button>
-<button onclick="previewPDF()">Preview PDF</button>
+      <label>Relevant Tax Period</label>
+      <input name="tax_period" placeholder="e.g., October 2018" required>
 
-<div id="preview"></div>
+      <label>IGST</label>
+      <input type="number" name="igst" value="0" required>
 
-<script>
-function autoFillTax() {
-  document.getElementById("cgst").value = 0;
-  document.getElementById("sgst").value = 0;
-  calculateTotal();
-}
+      <label>CGST</label>
+      <input type="number" name="cgst" value="0" required>
 
-function calculateTotal() {
-  const cgst = parseFloat(document.getElementById("cgst").value) || 0;
-  const sgst = parseFloat(document.getElementById("sgst").value) || 0;
-  const igst = parseFloat(document.getElementById("igst").value) || 0;
-  const cess = parseFloat(document.getElementById("cess").value) || 0;
-  const total = cgst + sgst + igst + cess;
-  document.getElementById("totalTax").value = total.toFixed(2);
-}
+      <label>SGST</label>
+      <input type="number" name="sgst" value="0" required>
 
-function showLegalText() {
-  const val = document.getElementById("legalSelect").value;
-  const text = {
-    "59": "Every registered person shall self-assess the taxes payable under this Act and furnish a return for each tax period.",
-    "9": "There shall be levied a tax called the Central Goods and Services Tax on all intra-state supplies.",
-    "50": "Interest shall be payable on any tax not paid within the prescribed period.",
-    "74": "Deals with tax not paid or short paid by reason of fraud or willful misstatement.",
-    "122": "Penalty equal to the tax due shall be levied in case of evasion." 
-  };
-  document.getElementById("legalText").innerText = text[val] || "";
-}
+      <label>CESS</label>
+      <input type="number" name="cess" value="0" required>
 
-function generatePreview() {
-  const name = document.getElementById("taxpayerName").value;
-  const gstin = document.getElementById("gstin").value;
-  const address = document.getElementById("address").value;
-  const period = document.getElementById("taxPeriod").value;
-  const total = document.getElementById("totalTax").value;
-  const legal = document.getElementById("legalText").innerText;
+      <label>Total Tax Liability</label>
+      <input type="number" name="total_tax" readonly>
+    </div>
 
-  const html = `
-    <h3>Show Cause Notice</h3>
-    <p><strong>Subject:</strong> ${document.getElementById("subject").value}</p>
-    <p><strong>1. Taxpayer Details:</strong> M/s ${name}, registered under GSTIN ${gstin}, located at ${address}.</p>
-    <p><strong>2. Issue:</strong> Non-payment of tax for the period ${period}.</p>
-    <p><strong>3. Liability:</strong> Total tax liability is ₹${total} including applicable components.</p>
-    <p><strong>4. Legal Provisions:</strong> ${legal}</p>
-    <p><strong>5. Show Cause:</strong> You are hereby directed to show cause within 30 days why the above mentioned tax liability should not be recovered under relevant provisions.</p>
-  `;
+    <div class="form-section">
+      <label>Reference OC Number (Previous Communication)</label>
+      <input name="communication_reference" required>
 
-  document.getElementById("preview").innerHTML = html;
-  document.getElementById("preview").style.display = "block";
-}
-</script>
+      <label>Reference Date</label>
+      <input name="communication_date" type="date" required>
 
-<script>
-// downloadDocx, exportPDF, previewPDF functions remain here
-</script>
+      <label>DRC-01A Reference</label>
+      <input name="drco_reference" required>
 
+      <label>DRC-01A Date</label>
+      <input name="drco_date" type="date" required>
+    </div>
+
+    <button type="submit">Generate Show Cause Notice</button>
+  </form>
+
+  <div id="previewContainer" style="margin-top: 40px;"></div>
+
+  <script>
+    const form = document.getElementById('scnForm');
+    const preview = document.getElementById('previewContainer');
+
+    const recalculateTotal = () => {
+      const igst = parseFloat(form.igst.value || 0);
+      const cgst = parseFloat(form.cgst.value || 0);
+      const sgst = parseFloat(form.sgst.value || 0);
+      const cess = parseFloat(form.cess.value || 0);
+      form.total_tax.value = igst + cgst + sgst + cess;
+    };
+
+    ['igst', 'cgst', 'sgst', 'cess'].forEach(name => {
+      form[name].addEventListener('input', recalculateTotal);
+    });
+
+    form.onsubmit = async function(e) {
+      e.preventDefault();
+      const formData = new FormData(form);
+      const json = Object.fromEntries(formData.entries());
+
+      preview.innerHTML = '<h2>Preview of SCN</h2>' +
+        '<pre>' + JSON.stringify(json, null, 2) + '</pre>';
+
+      const response = await fetch('/generate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(json),
+      });
+
+      const blob = await response.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'Show_Cause_Notice.docx';
+      a.click();
+    }
+  </script>
 </body>
 </html>
