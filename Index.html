@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Show Cause Notice Generator</title>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 800px; margin: auto; padding: 20px; }
+    textarea, input, select { width: 100%; margin: 10px 0; padding: 8px; }
+    button { padding: 10px 15px; }
+    h2, h3 { color: #333; }
+  </style>
+</head>
+<body>
+  <h2>Show Cause Notice Generator</h2>
+
+  <label>GSTIN:</label>
+  <input type="text" id="gstin">
+
+  <label>Trade Name:</label>
+  <input type="text" id="tradeName">
+
+  <label>Legal Name:</label>
+  <input type="text" id="legalName">
+
+  <label>Subject of Notice:</label>
+  <input type="text" id="subject">
+
+  <label>Issue (e.g. return default, tax evasion):</label>
+  <textarea id="issue"></textarea>
+
+  <label>Liability Details & Calculation:</label>
+  <textarea id="liability"></textarea>
+
+  <label>Legal Provisions (mention points manually for now):</label>
+  <textarea id="legal"></textarea>
+
+  <label>Officer Designation:</label>
+  <input type="text" id="officer">
+
+  <label>Date:</label>
+  <input type="date" id="date">
+
+  <button onclick="generate()">Generate Notice</button>
+
+  <h3>Generated Show Cause Notice:</h3>
+  <textarea id="output" rows="20"></textarea>
+
+  <script>
+    function generate() {
+      const gstin = document.getElementById("gstin").value;
+      const tradeName = document.getElementById("tradeName").value;
+      const legalName = document.getElementById("legalName").value;
+      const subject = document.getElementById("subject").value;
+      const issue = document.getElementById("issue").value;
+      const liability = document.getElementById("liability").value;
+      const legal = document.getElementById("legal").value;
+      const officer = document.getElementById("officer").value;
+      const date = document.getElementById("date").value;
+
+      const notice = `
+To,
+${legalName}
+Trade Name: ${tradeName}
+GSTIN: ${gstin}
+
+Subject: ${subject}
+
+---
+
+**Para 1: Taxpayer Details**  
+The taxpayer, registered under GST with GSTIN ${gstin}, operating under the trade name "${tradeName}" and legally recognized as "${legalName}", is recognized as a registered person under the GST Act. The records maintained indicate the said taxpayer is active and has engaged in supply of goods/services under the aforementioned credentials.
+
+---
+
+**Para 2: Issue Involved**  
+It has been observed that the taxpayer is involved in the following issue:  
+${issue}
+
+---
+
+**Para 3: Liability Found and Calculation**  
+The investigation/analysis reveals the following liability and computation:  
+${liability}
+
+---
+
+**Para 4: Relevant Legal Provisions**  
+The actions/inactions stated above appear to be in violation of the following provisions under the CGST Act and relevant Rules (as per CBIC guidelines):  
+${legal}
+
+---
+
+**Para 5: Notice to Show Cause**  
+Therefore, you are hereby called upon to show cause within 15 days from the date of issue of this notice as to why the tax liability as determined above should not be demanded and recovered under the provisions of the GST law. If no reply is received within the stipulated time, it will be presumed that you have nothing to state in your defense, and proceedings may be initiated ex-parte.
+
+Issued by:  
+${officer}  
+Date: ${date}
+      `;
+
+      document.getElementById("output").value = notice;
+    }
+  </script>
+</body>
+</html>
