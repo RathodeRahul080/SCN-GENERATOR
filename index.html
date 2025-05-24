@@ -1,127 +1,61 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <title>Show Cause Notice Generator</title>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/docx/7.7.0/docx.min.js"></script>
-  <style>
-    body { font-family: Arial, sans-serif; max-width: 800px; margin: auto; padding: 20px; }
-    textarea, input { width: 100%; margin: 10px 0; padding: 8px; }
-    button { padding: 10px 15px; margin-right: 10px; }
-  </style>
-</head>
-<body>
-  <h2>Show Cause Notice Generator</h2>
+from docx import Document
+from docx.shared import Pt
+from datetime import date
 
-  <label>GSTIN:</label>
-  <input type="text" id="gstin">
+def generate_scn(trader_name, gstin, address, tax_period, tax_amount, interest, penalty):
+    doc = Document()
 
-  <label>Trade Name:</label>
-  <input type="text" id="tradeName">
+    # Header
+    doc.add_heading('OFFICE OF THE ASSISTANT COMMISSIONER OF STATE TAX', level=1)
+    doc.add_paragraph('COMMERCIAL TAXES DEPARTMENT\n[Your Office Address Here]')
 
-  <label>Legal Name:</label>
-  <input type="text" id="legalName">
+    doc.add_paragraph(f"File No: [Insert File Number Here]       Date: {date.today().strftime('%d-%m-%Y')}")
 
-  <label>Subject of Notice:</label>
-  <input type="text" id="subject">
+    # Recipient
+    doc.add_paragraph(f"To,\n{trader_name},\n{address}")
 
-  <label>Issue (e.g. return default, tax evasion):</label>
-  <textarea id="issue"></textarea>
+    # Subject
+    doc.add_paragraph("Subject: SHOW CAUSE NOTICE UNDER SECTION 73 OF THE CGST ACT, 2017", style='Intense Quote')
 
-  <label>Liability Details & Calculation:</label>
-  <textarea id="liability"></textarea>
+    # Body
+    doc.add_paragraph(
+        f"This office has examined your case and it appears that you, being a registered person under GST having "
+        f"GSTIN {gstin}, have short paid tax or erroneously claimed refund or input tax credit without any fraudulent intent "
+        f"during the tax period {tax_period}. This notice is being issued under Section 73 of the CGST Act, 2017."
+    )
 
-  <label>Legal Provisions:</label>
-  <textarea id="legal"></textarea>
+    doc.add_paragraph("The discrepancy noticed is summarized as under:")
 
-  <label>Officer Designation:</label>
-  <input type="text" id="officer">
+    # Table
+    table = doc.add_table(rows=1, cols=5)
+    hdr_cells = table.rows[0].cells
+    hdr_cells[0].text = 'Tax Period'
+    hdr_cells[1].text = 'Tax Amount (₹)'
+    hdr_cells[2].text = 'Interest (₹)'
+    hdr_cells[3].text = 'Penalty (₹)'
+    hdr_cells[4].text = 'Total (₹)'
 
-  <label>Date:</label>
-  <input type="date" id="date">
+    row_cells = table.add_row().cells
+    row_cells[0].text = tax_period
+    row_cells[1].text = f"{tax_amount:.2f}"
+    row_cells[2].text = f"{interest:.2f}"
+    row_cells[3].text = f"{penalty:.2f}"
+    row_cells[4].text = f"{tax_amount + interest + penalty:.2f}"
 
-  <button onclick="generate()">Preview</button>
-  <button onclick="downloadDoc()">Download as Word</button>
+    # Legal references
+    doc.add_paragraph(
+        "This notice is being issued under the provisions of Section 73(1) of the CGST Act, 2017 read with Rule 142(1) "
+        "of the CGST Rules, 2017. You are required to show cause as to why the said amount along with applicable interest "
+        "under Section 50 and penalty under Section 73(9) should not be recovered from you."
+    )
 
-  <h3>Preview of Notice:</h3>
-  <textarea id="output" rows="20"></textarea>
+    doc.add_paragraph(
+        "You are directed to submit your written reply within 30 days from the date of receipt of this notice. "
+        "In case no satisfactory reply is received within the stipulated time, the case will be decided ex-parte on merits."
+    )
 
-  <script>
-    let latestNoticeText = '';
+    # Closing
+    doc.add_paragraph("\nPlace: [Your City]\nDate: " + date.today().strftime('%d-%m-%Y'))
+    doc.add_paragraph("\n(Your Name)\nAssistant Commissioner of State Tax")
 
-    function generate() {
-      const gstin = document.getElementById("gstin").value;
-      const tradeName = document.getElementById("tradeName").value;
-      const legalName = document.getElementById("legalName").value;
-      const subject = document.getElementById("subject").value;
-      const issue = document.getElementById("issue").value;
-      const liability = document.getElementById("liability").value;
-      const legal = document.getElementById("legal").value;
-      const officer = document.getElementById("officer").value;
-      const date = document.getElementById("date").value;
-
-      const notice = `
-To,
-${legalName}
-Trade Name: ${tradeName}
-GSTIN: ${gstin}
-
-Subject: ${subject}
-
----
-
-Para 1: Taxpayer Details  
-The taxpayer, registered under GST with GSTIN ${gstin}, operating under the trade name "${tradeName}" and legally recognized as "${legalName}", is recognized as a registered person under the GST Act. The records maintained indicate the said taxpayer is active and has engaged in supply of goods/services under the aforementioned credentials.
-
----
-
-Para 2: Issue Involved  
-${issue}
-
----
-
-Para 3: Liability Found and Calculation  
-${liability}
-
----
-
-Para 4: Relevant Legal Provisions  
-${legal}
-
----
-
-Para 5: Notice to Show Cause  
-You are hereby called upon to show cause within 15 days from the date of issue of this notice as to why the tax liability as determined above should not be demanded and recovered under the provisions of the GST law. If no reply is received within the stipulated time, it will be presumed that you have nothing to state in your defense, and proceedings may be initiated ex-parte.
-
-Issued by:  
-${officer}  
-Date: ${date}
-      `;
-      latestNoticeText = notice;
-      document.getElementById("output").value = notice;
-    }
-
-    async function downloadDoc() {
-      const { Document, Packer, Paragraph, TextRun } = window.docx;
-
-      if (!latestNoticeText) {
-        alert("Please click 'Preview' first to generate the notice.");
-        return;
-      }
-
-      const doc = new Document({
-        sections: [{
-          children: latestNoticeText.split('\n').map(line => 
-            new Paragraph({ children: [new TextRun(line)] })
-          )
-        }]
-      });
-
-      const blob = await Packer.toBlob(doc);
-      const link = document.createElement("a");
-      link.href = URL.createObjectURL(blob);
-      link.download = "ShowCauseNotice.docx";
-      link.click();
-    }
-  </script>
-</body>
-</html>
+    doc.save("Show_Cause_Notice.docx")
