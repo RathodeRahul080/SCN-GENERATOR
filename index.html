@@ -1,92 +1,75 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>SCN Generator - GST Format</title>
+  <title>GST SCN Generator</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/docx/7.7.0/docx.min.js"></script>
   <style>
-    body { font-family: Arial, sans-serif; max-width: 900px; margin: auto; padding: 20px; }
-    input, textarea, select { width: 100%; margin: 10px 0; padding: 8px; }
-    button { padding: 10px 15px; margin-top: 15px; }
-  </style>
-  <style>
-  body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    max-width: 900px;
-    margin: auto;
-    padding: 20px;
-    background: #f8f9fa;
-  }
-
-  #preview {
-    background: white;
-    color: black;
-    padding: 40px;
-    margin-top: 20px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
-  }
-
-  #previewContent h2, #previewContent h3 {
-    text-align: center;
-    margin-bottom: 5px;
-  }
-
-  #previewContent p, #previewContent ul, #previewContent ol {
-    text-align: justify;
-    line-height: 1.6;
-    margin: 10px 0;
-  }
-
-  #previewContent table {
-    width: 100%;
-    border-collapse: collapse;
-    margin: 20px 0;
-  }
-
-  #previewContent table, #previewContent th, #previewContent td {
-    border: 1px solid #333;
-  }
-
-  #previewContent th, #previewContent td {
-    padding: 8px;
-    text-align: center;
-  }
-
-  @media print {
-    body * {
-      visibility: hidden;
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 1000px;
+      margin: auto;
+      padding: 20px;
+      background: #f8f9fa;
     }
 
-    #preview, #preview * {
-      visibility: visible;
+    h2, h3 {
+      text-align: center;
+    }
+
+    label, input, textarea, select {
+      display: block;
+      width: 100%;
+      margin-top: 10px;
+      padding: 8px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+
+    th, td {
+      border: 1px solid #444;
+      padding: 8px;
+      text-align: center;
+    }
+
+    button {
+      margin-top: 20px;
+      padding: 10px 20px;
+      margin-right: 10px;
     }
 
     #preview {
-      position: absolute;
-      left: 0;
-      top: 0;
-      width: 100%;
-      box-shadow: none;
-      margin: 0;
+      background: white;
+      padding: 40px;
+      margin-top: 30px;
+      display: none;
     }
 
-    button, select, input, textarea {
-      display: none !important;
+    @media print {
+      body * { visibility: hidden; }
+      #preview, #preview * { visibility: visible; }
+      #preview { position: absolute; top: 0; left: 0; width: 100%; box-shadow: none; margin: 0; }
+      input, textarea, button, select { display: none !important; }
     }
-  }
-</style>
+  </style>
 </head>
 <body>
 
-<h2>Show Cause Notice Generator (Sec. 73 / 74)</h2>
+<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/01/Emblem_of_India.svg/1200px-Emblem_of_India.svg.png" width="80" style="float:left; margin-top: 10px;">
+<h2>OFFICE OF THE SUPERINTENDENT OF CENTRAL TAX</h2>
+<h3>CENTRAL GST RANGE: NANDYAL-I, KURNOOL – 518001</h3>
 
 <label>Section Applicable:</label>
 <select id="section">
-  <option value="73">Section 73 – Non-fraud (short payment/error)</option>
-  <option value="74" selected>Section 74 – Fraud/willful misstatement</option>
+  <option value="73">Section 73 – Non-fraud (error/short payment)</option>
+  <option value="74" selected>Section 74 – Fraud / Willful Misstatement</option>
 </select>
 
-<label>Trader Name:</label>
-<input type="text" id="traderName" value="M/s. AMEENA TRADERS">
+<label>Taxpayer Name:</label>
+<input type="text" id="taxpayer" value="M/s. AMEENA TRADERS">
 
 <label>GSTIN:</label>
 <input type="text" id="gstin" value="37BDEPD5901P1ZD">
@@ -95,13 +78,44 @@
 <textarea id="address">WARD NO.9, MAIN ROAD, GAJULAPALLE, Nandyal, Andhra Pradesh, 518501</textarea>
 
 <label>Tax Period:</label>
-<input type="text" id="taxPeriod" value="October 2018">
+<input type="text" id="period" value="October 2018">
 
-<label>Tax Amount (₹):</label>
-<input type="number" id="taxAmount" value="31680">
+<h3>Liability Details</h3>
 
-<label>Date Tax Was Due (YYYY-MM-DD):</label>
-<input type="date" id="dueDate" value="2018-11-20">
+<table id="liabilityTable">
+  <thead>
+    <tr>
+      <th>E-Way Bill</th>
+      <th>Date</th>
+      <th>Invoice No</th>
+      <th>Invoice Date</th>
+      <th>Value (₹)</th>
+      <th>IGST (₹)</th>
+      <th>CGST (₹)</th>
+      <th>SGST (₹)</th>
+      <th>Total (₹)</th>
+      <th>Interest (₹)</th>
+      <th>Penalty (₹)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><input value="101076649699"></td>
+      <td><input value="24-10-2018"></td>
+      <td><input value="1"></td>
+      <td><input value="24-10-2018"></td>
+      <td><input value="207680"></td>
+      <td><input value="31680"></td>
+      <td><input value="0"></td>
+      <td><input value="0"></td>
+      <td><input value="31680" readonly></td>
+      <td><input value="0"></td>
+      <td><input value="0"></td>
+    </tr>
+  </tbody>
+</table>
+
+<button onclick="addRow()">+ Add More Rows</button>
 
 <label>Officer Designation:</label>
 <input type="text" id="officer" value="SUPERINTENDENT">
@@ -109,192 +123,141 @@
 <label>Place:</label>
 <input type="text" id="place" value="KURNOOL">
 
-<button onclick="generateDoc()">Download SCN as Word</button>
+<button onclick="generatePreview()">Preview</button>
+<button onclick="generateDoc()">Download Word</button>
+
+<div id="preview">
+  <div id="previewContent"></div>
+</div>
+
 <script>
-    function generatePreview() {
-  const section = document.getElementById("section").value;
-  const traderName = document.getElementById("traderName").value;
-  const gstin = document.getElementById("gstin").value;
-  const address = document.getElementById("address").value;
-  const taxPeriod = document.getElementById("taxPeriod").value;
-  const taxAmount = parseFloat(document.getElementById("taxAmount").value);
-  const dueDate = new Date(document.getElementById("dueDate").value);
-  const officer = document.getElementById("officer").value;
-  const place = document.getElementById("place").value;
+function addRow() {
+  const table = document.querySelector("#liabilityTable tbody");
+  const row = table.insertRow();
+  for (let i = 0; i < 11; i++) {
+    const cell = row.insertCell();
+    cell.innerHTML = '<input>';
+  }
+}
+
+function getTableData() {
+  const rows = document.querySelectorAll('#liabilityTable tbody tr');
+  return Array.from(rows).map(row => {
+    const cells = row.querySelectorAll('td input');
+    return {
+      eway: cells[0].value,
+      ewayDate: cells[1].value,
+      invoice: cells[2].value,
+      invoiceDate: cells[3].value,
+      value: parseFloat(cells[4].value) || 0,
+      igst: parseFloat(cells[5].value) || 0,
+      cgst: parseFloat(cells[6].value) || 0,
+      sgst: parseFloat(cells[7].value) || 0,
+      total: parseFloat(cells[8].value) || 0,
+      interest: parseFloat(cells[9].value) || 0,
+      penalty: parseFloat(cells[10].value) || 0,
+    };
+  });
+}
+
+function generatePreview() {
+  const taxpayer = document.getElementById('taxpayer').value;
+  const gstin = document.getElementById('gstin').value;
+  const address = document.getElementById('address').value;
+  const officer = document.getElementById('officer').value;
+  const place = document.getElementById('place').value;
   const today = new Date().toLocaleDateString('en-GB');
+  const period = document.getElementById('period').value;
+  const section = document.getElementById('section').value;
 
-  const daysLate = Math.max(0, Math.floor((new Date() - dueDate) / (1000 * 60 * 60 * 24)));
-  const interest = Math.round(taxAmount * 0.18 * (daysLate / 365));
-  const penalty = section === "74" ? taxAmount : Math.max(taxAmount * 0.10, 10000);
-  const total = taxAmount + interest + penalty;
+  const liabilities = getTableData();
 
-  const sectionTitle = section === "74" ? "Section 74 – Fraud/willful misstatement" : "Section 73 – Non-fraudulent tax short payment";
-  const penaltyRef = section === "74" ? "Section 74 and Section 122(2)(b)" : "Section 73(9)";
+  let tableHTML = `<table>
+      <tr><th>E-Way Bill</th><th>Date</th><th>Invoice No</th><th>Invoice Date</th><th>Value</th><th>IGST</th><th>CGST</th><th>SGST</th><th>Total</th><th>Interest</th><th>Penalty</th></tr>`;
+  liabilities.forEach(l => {
+    tableHTML += `<tr><td>${l.eway}</td><td>${l.ewayDate}</td><td>${l.invoice}</td><td>${l.invoiceDate}</td>
+    <td>${l.value}</td><td>${l.igst}</td><td>${l.cgst}</td><td>${l.sgst}</td><td>${l.total}</td><td>${l.interest}</td><td>${l.penalty}</td></tr>`;
+  });
+  tableHTML += `</table>`;
 
-  const html = `
-    <h2 style="text-align:center;">OFFICE OF THE SUPERINTENDENT OF CENTRAL TAX</h2>
-    <p style="text-align:center;">CENTRAL GST RANGE: NANDYAL-I, NEAR CHILDREN PARK, N.R. PETA, KURNOOL - 518001</p>
+  const legalSection = section === '74'
+    ? `<li>Section 74 – Fraud / Willful misstatement</li><li>Section 122(2)(b) – Penalty</li>`
+    : `<li>Section 73 – Short payment (non-fraud)</li><li>Section 73(9) – Penalty</li>`;
+
+  const preview = `
+    <h2>OFFICE OF THE SUPERINTENDENT OF CENTRAL TAX</h2>
+    <h3>CENTRAL GST RANGE: NANDYAL-I, KURNOOL – 518001</h3>
     <p><strong>Date:</strong> ${today}</p>
-    <p><strong>To:</strong><br>${traderName}<br>${address}</p>
-    <h3>Subject: Show Cause Notice under ${sectionTitle}</h3>
-    <p>${traderName}, registered under GST (GSTIN: ${gstin}), is found liable for the following tax discrepancies for the period ${taxPeriod}:</p>
-    <table border="1" cellspacing="0" cellpadding="6" style="width:100%; border-collapse:collapse;">
-      <tr><th>Tax Amount (₹)</th><th>Interest (₹)</th><th>Penalty (₹)</th><th>Total (₹)</th></tr>
-      <tr><td>${taxAmount}</td><td>${interest}</td><td>${penalty}</td><td>${total}</td></tr>
-    </table>
+    <p><strong>To:</strong><br>${taxpayer}<br>${address}</p>
+    <h3>Subject: GST Show Cause Notice under Section ${section}</h3>
+    <p>${taxpayer}, registered under GST (GSTIN: ${gstin}), is found liable for the following discrepancies for the period ${period}.</p>
+    <p>The details are as under:</p>
+    ${tableHTML}
     <p><strong>Legal Provisions:</strong></p>
     <ul>
-      <li>Section 59 – Self-assessment</li>
-      <li>Section 9 – Levy and Collection of Tax</li>
-      <li>Section 50 – Interest on delayed payment of tax</li>
-      <li>${section === "74" ? "Section 74 – Fraud / suppression of facts" : "Section 73 – Tax short paid without fraud"}</li>
-      <li>${penaltyRef} – Penalty provisions</li>
-      <li>Rule 138 – E-Way Bill compliance</li>
-      <li>Section 39 – Return filing</li>
+      <li>Section 9 – Levy of tax</li>
+      <li>Section 50 – Interest</li>
+      ${legalSection}
+      <li>Rule 138 – E-Way Bill</li>
+      <li>Section 39 – Returns</li>
       <li>Section 20 of IGST Act</li>
     </ul>
-    <p>You are hereby directed to show cause within 30 days why:</p>
-    <ol>
-      <li>Tax of ₹${taxAmount} should not be demanded</li>
-      <li>Interest of ₹${interest} should not be recovered</li>
-      <li>Penalty of ₹${penalty} should not be imposed</li>
-    </ol>
-    <p>Failure to reply within the stipulated time will result in ex-parte adjudication. You may submit supporting documents or request a personal hearing.</p>
+    <p>You are directed to show cause within 30 days.</p>
     <p><strong>Place:</strong> ${place}<br><strong>Date:</strong> ${today}</p>
     <p><strong>${officer}</strong><br>NANDYAL-I CGST RANGE</p>
   `;
 
-  const previewDiv = document.getElementById("previewContent");
-  previewDiv.innerHTML = html;
-
-  // Show preview & trigger print
-  const previewWrapper = document.getElementById("preview");
-  previewWrapper.style.display = "block";
-
-  setTimeout(() => {
-    window.print();
-    previewWrapper.style.display = "none";
-  }, 300);
+  document.getElementById('previewContent').innerHTML = preview;
+  document.getElementById('preview').style.display = 'block';
 }
+
 async function generateDoc() {
   const { Document, Packer, Paragraph, TextRun, Table, TableRow, TableCell, WidthType } = window.docx;
 
-  const section = document.getElementById("section").value;
-  const traderName = document.getElementById("traderName").value;
-  const gstin = document.getElementById("gstin").value;
-  const address = document.getElementById("address").value;
-  const taxPeriod = document.getElementById("taxPeriod").value;
-  const taxAmount = parseFloat(document.getElementById("taxAmount").value);
-  const dueDate = new Date(document.getElementById("dueDate").value);
-  const officer = document.getElementById("officer").value;
-  const place = document.getElementById("place").value;
-  const today = new Date();
-  const todayStr = today.toLocaleDateString('en-GB');
-
-  const daysLate = Math.max(0, Math.floor((today - dueDate) / (1000 * 60 * 60 * 24)));
-  const interest = Math.round(taxAmount * 0.18 * (daysLate / 365));
-
-  let penalty = 0;
-  let penaltyText = "";
-  let sectionTitle = "";
-  let legalRefs = [];
-
-  if (section === "74") {
-    penalty = taxAmount;
-    penaltyText = `₹${penalty} as penalty under Section 74 and Section 122(2)(b)`;
-    sectionTitle = "Section 74 – Fraud/willful misstatement";
-    legalRefs = [
-      "Section 59 – Self-assessment",
-      "Section 9 – Levy and Collection of Tax",
-      "Section 50 – Interest on delayed payment of tax",
-      "Section 74 – Tax not paid/short paid due to suppression/fraud",
-      "Section 122(2)(b) – Penalty for evasion",
-      "Rule 138 – E-Way Bill compliance",
-      "Section 39 – Return filing",
-      "Section 20 of IGST Act – Applicability of CGST to IGST"
-    ];
-  } else {
-    penalty = Math.max(taxAmount * 0.10, 10000);
-    penaltyText = `₹${penalty} as penalty under Section 73(9)`;
-    sectionTitle = "Section 73 – Non-fraudulent tax short payment";
-    legalRefs = [
-      "Section 59 – Self-assessment",
-      "Section 9 – Levy and Collection of Tax",
-      "Section 50 – Interest on delayed payment of tax",
-      "Section 73 – Tax short paid or unpaid without fraud",
-      "Section 73(9) – Penalty for non-fraud cases",
-      "Rule 138 – E-Way Bill compliance",
-      "Section 39 – Return filing",
-      "Section 20 of IGST Act – Applicability of CGST to IGST"
-    ];
-  }
+  const taxpayer = document.getElementById('taxpayer').value;
+  const gstin = document.getElementById('gstin').value;
+  const address = document.getElementById('address').value;
+  const officer = document.getElementById('officer').value;
+  const place = document.getElementById('place').value;
+  const today = new Date().toLocaleDateString('en-GB');
+  const period = document.getElementById('period').value;
+  const section = document.getElementById('section').value;
+  const liabilities = getTableData();
 
   const para = (text, bold = false) => new Paragraph({ children: [new TextRun({ text, bold })] });
 
   const doc = new Document({
     sections: [{
       children: [
-        new Paragraph({ text: "OFFICE OF THE SUPERINTENDENT OF CENTRAL TAX", heading: "Heading1" }),
-        para("CENTRAL GST RANGE: NANDYAL-I"),
-        para("NEAR CHILDREN PARK, N.R. PETA, KURNOOL - 518001, ANDHRA PRADESH"),
-        para(`File No.: OC No. 93/2025           Date: ${todayStr}`),
-        new Paragraph(""),
-        para("To,"),
-        para(`${traderName},`),
-        para(`${address}`),
-        new Paragraph(""),
-        para(`Subject: Non-payment of GST liability – Issuance of Show Cause Notice under ${sectionTitle} – Reg.`, true),
-        new Paragraph(""),
-        para(`${traderName}, ${address}, hereinafter referred to as 'the taxpayer', are registered under CGST Act, 2017 vide GSTIN: ${gstin}.`),
-        para("Audit revealed the taxpayer generated e-way bills without filing corresponding returns. These were reported by AG Audit."),
-        para("On verification, the following liabilities were identified:"),
+        para("OFFICE OF THE SUPERINTENDENT OF CENTRAL TAX", true),
+        para("CENTRAL GST RANGE: NANDYAL-I, KURNOOL – 518001"),
+        para(`Date: ${today}`),
+        para(`To:\n${taxpayer}\n${address}`),
+        para(`Subject: GST Show Cause Notice under Section ${section}`, true),
+        para(`${taxpayer}, registered under GST (GSTIN: ${gstin}), is liable for discrepancies for the tax period ${period}.`),
+        para("Details of liability are as under:"),
 
         new Table({
           rows: [
             new TableRow({
-              children: ["Tax Period", "Tax Amount", "Interest", "Penalty", "Total"].map(text =>
-                new TableCell({
-                  width: { size: 20, type: WidthType.PERCENTAGE },
-                  children: [new Paragraph({ text, bold: true })]
-                })
+              children: ["E-Way Bill", "Date", "Invoice", "Inv. Date", "Value", "IGST", "CGST", "SGST", "Total", "Interest", "Penalty"].map(h =>
+                new TableCell({ children: [new Paragraph({ text: h, bold: true })] })
               )
             }),
-            new TableRow({
-              children: [
-                taxPeriod,
-                `₹${taxAmount}`,
-                `₹${interest}`,
-                `₹${penalty}`,
-                `₹${taxAmount + interest + penalty}`
-              ].map(text =>
-                new TableCell({
-                  width: { size: 20, type: WidthType.PERCENTAGE },
-                  children: [new Paragraph(text)]
-                })
-              )
-            })
+            ...liabilities.map(l =>
+              new TableRow({
+                children: [l.eway, l.ewayDate, l.invoice, l.invoiceDate, l.value, l.igst, l.cgst, l.sgst, l.total, l.interest, l.penalty].map(val =>
+                  new TableCell({ children: [new Paragraph(String(val))] })
+                )
+              })
+            )
           ]
         }),
 
-        para(""),
-        para("Legal Provisions involved include:"),
-        ...legalRefs.map(ref => para("- " + ref)),
-
-        para(""),
-        para("You are hereby required to Show Cause within 30 days as to why:"),
-        para(`1. ₹${taxAmount} as IGST for ${taxPeriod} should not be demanded`),
-        para(`2. ₹${interest} as interest under Section 50 should not be recovered`),
-        para(`3. ${penaltyText}`),
-
-        para("If no reply is received within the stipulated time, the case will be decided ex-parte on merits. Supporting documents and hearing requests may be submitted."),
-        para("This notice is issued without prejudice to any other legal action under the GST laws."),
-        para("Reliance is placed on the documents already available with the taxpayer."),
-
-        para(""),
+        para("You are hereby directed to show cause within 30 days of this notice."),
         para(`Place: ${place}`),
-        para(`Date: ${todayStr}`),
-        para(""),
-        para(`${officer}`),
+        para(`Date: ${today}`),
+        para(officer, true),
         para("NANDYAL-I CGST RANGE")
       ]
     }]
@@ -307,8 +270,5 @@ async function generateDoc() {
   link.click();
 }
 </script>
-  <div id="preview" style="display:none;">
-  <div id="previewContent"></div>
-</div>
 </body>
 </html>
