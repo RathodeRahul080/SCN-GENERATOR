@@ -44,7 +44,9 @@
 <input type="text" id="place" value="KURNOOL">
 
 <button onclick="generateDoc()">Download SCN as Word</button>
-
+<div id="preview" style="display:none; padding: 40px; font-family: Arial; color: #000;">
+  <div id="previewContent"></div>
+</div>
 <script>
     function generatePreview() {
   const section = document.getElementById("section").value;
@@ -242,8 +244,5 @@ async function generateDoc() {
   link.click();
 }
 </script>
-<div id="preview" style="display:none; padding: 40px; font-family: Arial; color: #000;">
-  <div id="previewContent"></div>
-</div>
 </body>
 </html>
