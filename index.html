@@ -8,6 +8,72 @@
     input, textarea, select { width: 100%; margin: 10px 0; padding: 8px; }
     button { padding: 10px 15px; margin-top: 15px; }
   </style>
+  <style>
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    max-width: 900px;
+    margin: auto;
+    padding: 20px;
+    background: #f8f9fa;
+  }
+
+  #preview {
+    background: white;
+    color: black;
+    padding: 40px;
+    margin-top: 20px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  }
+
+  #previewContent h2, #previewContent h3 {
+    text-align: center;
+    margin-bottom: 5px;
+  }
+
+  #previewContent p, #previewContent ul, #previewContent ol {
+    text-align: justify;
+    line-height: 1.6;
+    margin: 10px 0;
+  }
+
+  #previewContent table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+  }
+
+  #previewContent table, #previewContent th, #previewContent td {
+    border: 1px solid #333;
+  }
+
+  #previewContent th, #previewContent td {
+    padding: 8px;
+    text-align: center;
+  }
+
+  @media print {
+    body * {
+      visibility: hidden;
+    }
+
+    #preview, #preview * {
+      visibility: visible;
+    }
+
+    #preview {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      box-shadow: none;
+      margin: 0;
+    }
+
+    button, select, input, textarea {
+      display: none !important;
+    }
+  }
+</style>
 </head>
 <body>
 
@@ -44,9 +110,6 @@
 <input type="text" id="place" value="KURNOOL">
 
 <button onclick="generateDoc()">Download SCN as Word</button>
-<div id="preview" style="display:none; padding: 40px; font-family: Arial; color: #000;">
-  <div id="previewContent"></div>
-</div>
 <script>
     function generatePreview() {
   const section = document.getElementById("section").value;
@@ -244,5 +307,8 @@ async function generateDoc() {
   link.click();
 }
 </script>
+  <div id="preview" style="display:none;">
+  <div id="previewContent"></div>
+</div>
 </body>
 </html>
